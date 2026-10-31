@@ -292,10 +292,11 @@ def _ShouldSkip(commit_check, modified_lines, line, rule, test_class=False,
 
 def _GetModifiedFiles(commit, explicit_commit=False, out=sys.stdout):
   root = git.repository_root()
-  pending_files = git.modified_files(root, True)
-  if pending_files and not explicit_commit:
-    out.write(ERROR_UNCOMMITTED)
-    sys.exit(1)
+  if not explicit_commit:
+    pending_files = git.modified_files(root, True)
+    if pending_files:
+      out.write(ERROR_UNCOMMITTED)
+      sys.exit(1)
 
   modified_files = git.modified_files(root, True, commit)
   modified_files = {f: modified_files[f] for f
